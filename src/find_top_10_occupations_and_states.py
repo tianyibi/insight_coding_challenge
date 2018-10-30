@@ -7,7 +7,7 @@ def generate_top_10_files(file_str, output_occ_str, output_state_str):
     total_certified = 0
     with open(file_str, 'r') as f:
         line1 = f.readline().rstrip('\n').split(';')
-        # find index of SOC_NAME, SOC_CODE, CASE_STATUS
+        # find index of SOC_NAME, SOC_CODE, CASE_STATUS, work state
         col_idx = [None for _ in range(4)]
         for idx, col in enumerate(line1):
             if "soc_name" in col.lower():
@@ -22,6 +22,7 @@ def generate_top_10_files(file_str, output_occ_str, output_state_str):
         if None in col_idx:
             raise ValueError("missing one of the SOC_NAME, SOC_CODE, CASE_STATUS or WORKSITE_STATE column")
 
+        # go through file check status of each entry, save and count
         for line in f:
             entry = line.rstrip('\n').split(';')
             key = (entry[col_idx[1]])
@@ -42,9 +43,11 @@ def generate_top_10_files(file_str, output_occ_str, output_state_str):
                 except KeyError:
                     state_dic[key_state] = [-1, value_state]
 
+    # sort occupation and state based on number of application and alphabetical order
     top_10_item = sorted(occ_dic.values())[:10] 
     top_10_state = sorted(state_dic.values())[:10]
 
+    # write to 2 output files
     with open(output_occ_str, 'w') as f:
         f.write("TOP_OCCUPATIONS;NUMBER_CERTIFIED_APPLICATIONS;PERCENTAGE\n")
 
