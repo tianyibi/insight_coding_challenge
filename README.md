@@ -1,1 +1,1 @@
-# insight_coding_challenge
+# insight_cc
